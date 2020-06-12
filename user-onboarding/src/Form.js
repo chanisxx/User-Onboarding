@@ -2,6 +2,56 @@ import React, { useState, useEffect } from 'react';
 import * as yup from 'yup';
 import axios from 'axios';
 import './App.css';
+import styled from 'styled-components'
+
+const FormStyle = styled.form`
+    display: flex;
+    flex-direction: column;
+    width: 60%;
+    margin: 20px auto;
+    padding: 28px;
+    border-radius: 5px;
+`;
+
+const LabelStyle = styled.label`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 20px 0;
+`;
+
+const ButtonStyle = styled.button`
+    background-color: lightblue;
+    margin: 40px 0px;
+    display: inline-block;
+    padding: 8px 11px;
+    border: none;
+    border-radius: 5px; 
+    cursor: pointer;
+    box-shadow: 0 5px 20px -3px rgba(0, 0, 0, 0.5);
+`;
+
+const InputStyle = styled.input`
+    width: 100%;
+    display: block;
+    width: 100%;
+    border: none;
+    border-bottom: 2px solid lightgreen;
+    padding: 5px;
+    font-size: 1rem;
+    background-color: white;
+    outline-width: 0;
+`;
+
+const CheckboxStyle = styled.label`
+    font-size: .8rem;
+    margin: 30px, 0;
+    disply: block;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+`;
 
 function Form() {
 
@@ -23,13 +73,12 @@ function Form() {
     });
 
     const formSchema = yup.object().shape({
-        name: yup.string().required('Must enter name'),
+        name: yup.string().required('Please enter name'),
         email: yup 
             .string()
-            .email('Must be a valid email address')
-            .required('Must include email address'),
+            .required('You need to include an email address'),
         password: yup.string().required('Must enter password'),
-        terms: yup.boolean().oneOf([true])
+        terms: yup.boolean().oneOf([true], 'You gotta accept terms and conditions')
     });
 
     useEffect(() => {
@@ -92,6 +141,7 @@ function Form() {
                     email:'',
                     password:'',
                     terms: true
+                    
                 });
 
                 setServerError(null);
@@ -101,36 +151,46 @@ function Form() {
             })
     }
 
+    const [showPassword, setShowPassword] = useState(false);
+    const togglePassword = () => {
+        setShowPassword(showPassword ? false : true)
+    }
 
     return (
-        <form onSubmit={formSubmit}>
+        <FormStyle onSubmit={formSubmit}>
 
-            <label htmlFor='name'>
-                Name:<input id='name' type='text' name='name' onChange={inputChange}/>
+            <LabelStyle htmlFor='name'>
+                <InputStyle id='name' type='text' name='name' onChange={inputChange} placeholder='Name'/>
                 {errors.name.length > 0 ? <p className="error">{errors.name}</p> : null}
-            </label>
+            </LabelStyle>
 
-            <label htmlFor='email'>
-                Email:<input id='email' type='text' name='email' onChange={inputChange}/>
+            <LabelStyle htmlFor='email'>
+                <InputStyle id='email' type='text' name='email' onChange={inputChange} placeholder="Email"/>
                 {errors.email.length > 0 ? <p className="error">{errors.email}</p> : null}
-            </label>
+            </LabelStyle>
 
-            <label htmlFor='password'>
-                Password:<input id='password' type='text' name='password' onChange={inputChange}/>
-                {errors.password.length > 0 ? <p className="error">{errors.password}</p> : null}
-            </label>
+            <LabelStyle htmlFor='password'>
+                <InputStyle id='password' type={showPassword ? "text" : "password"} name='password' onChange={inputChange} placeholder="Password"/>
+                 {errors.password.length > 0 ? <p className="error">{errors.password}</p> : null}
+               
+            </LabelStyle>
 
-            <label htmlFor='terms'>
+            <CheckboxStyle>
+            show password
+            <input type="checkbox" id="togglePassword" onClick = {togglePassword} /> 
+            </CheckboxStyle>
+
+            <CheckboxStyle  htmlFor='terms'>
+            Terms and Conditions
                 <input id='terms' type='checkbox' name='terms' checked={form.terms} onChange={inputChange}/>
-                Terms and Conditions
                 {errors.terms.length > 0 ? <p className="error">{errors.terms}</p> : null}
-            </label>
+            </CheckboxStyle>
 
-            <button type='submit'>Complete</button>
+            <ButtonStyle type='submit'>Complete</ButtonStyle>
 
             <pre>{JSON.stringify(users, null, 2)}</pre>
 
-        </form>
+        </FormStyle>
     )
 }
 

@@ -7,11 +7,10 @@ import './App.css';
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-      New User? Come Onboard!
+      <h1>
+      Sign Up
       <Form/>
-      </header>
- 
+      </h1>
     </div>
   );
 }
